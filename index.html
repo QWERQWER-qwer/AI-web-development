@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>헬시플랜 — 건강한 다이어트 플랜</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 네비게이션 -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a href="#hero" class="nav__logo">헬시플랜</a>
+      <nav class="nav__menu">
+        <a href="#hero">홈</a>
+        <a href="#plan">플랜 생성</a>
+        <a href="#guide">가이드·FAQ</a>
+        <a href="#contact">문의</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 1. 메인 (Hero) -->
+  <section id="hero" class="hero">
+    <div class="hero__content">
+      <h1>건강하게 빼는 다이어트 플랜</h1>
+      <p>키·체중·목표만 입력하면, 무리 없는 감량 속도를 기준으로<br />맞춤 플랜을 만들어 드려요.</p>
+      <a href="#plan" class="btn btn--primary">플랜 만들러 가기</a>
+    </div>
+  </section>
+
+  <!-- 2. 플랜 생성 (AI) -->
+  <section id="plan" class="plan">
+    <h2>맞춤 플랜 생성</h2>
+    <p class="section__desc">아래 정보를 입력하면 AI가 다이어트 플랜을 만들어드려요.</p>
+
+    <div class="form">
+      <div class="form__row">
+        <label>키 (cm) *</label>
+        <input type="number" id="height" placeholder="예: 170" />
+      </div>
+      <div class="form__row">
+        <label>현재 체중 (kg) *</label>
+        <input type="number" id="weight" placeholder="예: 75" />
+      </div>
+      <div class="form__row">
+        <label>목표 체중 (kg) *</label>
+        <input type="number" id="target" placeholder="예: 65" />
+      </div>
+      <div class="form__row">
+        <label>목표 기간 (주) *</label>
+        <input type="number" id="weeks" placeholder="예: 12" />
+      </div>
+
+      <div class="form__row">
+        <label>나이 (선택)</label>
+        <input type="number" id="age" placeholder="예: 30" />
+      </div>
+      <div class="form__row">
+        <label>성별 (선택)</label>
+        <select id="gender">
+          <option value="">선택 안 함</option>
+          <option value="남성">남성</option>
+          <option value="여성">여성</option>
+        </select>
+      </div>
+      <div class="form__row">
+        <label>인바디 - 체지방률 % (선택)</label>
+        <input type="number" id="bodyfat" placeholder="예: 22" />
+      </div>
+      <div class="form__row">
+        <label>인바디 - 골격근량 kg (선택)</label>
+        <input type="number" id="muscle" placeholder="예: 30" />
+      </div>
+
+      <div class="form__row">
+        <label>직업</label>
+        <select id="job">
+          <option value="직장인">직장인</option>
+          <option value="학생">학생</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+      <div class="form__row">
+        <label>하루 가용 시간</label>
+        <select id="time">
+          <option value="30분 이하">30분 이하</option>
+          <option value="1시간">1시간</option>
+          <option value="2시간 이상">2시간 이상</option>
+        </select>
+      </div>
+      <div class="form__row">
+        <label>월 예산</label>
+        <select id="budget">
+          <option value="5만원 이하">5만원 이하</option>
+          <option value="5~15만원">5~15만원</option>
+          <option value="15만원 이상">15만원 이상</option>
+        </select>
+      </div>
+      <div class="form__row">
+        <label>운동 환경</label>
+        <select id="place">
+          <option value="헬스장">헬스장</option>
+          <option value="홈트">홈트</option>
+        </select>
+      </div>
+
+      <div id="bmiBox" class="bmi-box"></div>
+
+      <button id="generateBtn" class="btn btn--primary btn--full">플랜 생성하기</button>
+      <p class="disclaimer">※ 본 플랜은 의학적 조언이 아닌 참고용입니다. 건강 상태에 따라 전문가와 상담하세요.</p>
+    </div>
+
+    <div id="result" class="result"></div>
+  </section>
+
+  <!-- 3. 가이드 / FAQ -->
+  <section id="guide" class="guide">
+    <h2>가이드 · FAQ</h2>
+    <div class="guide__grid">
+      <div class="card">
+        <h3>건강한 감량 속도란?</h3>
+        <p>일반적으로 주당 현재 체중의 0.5~1% 감량이 권장됩니다. 이보다 빠르면 근손실·요요 위험이 커집니다.</p>
+      </div>
+      <div class="card">
+        <h3>인바디가 꼭 필요한가요?</h3>
+        <p>아니요. 키와 체중만으로도 BMI 기준의 방향을 잡을 수 있습니다. 인바디가 있으면 더 정밀한 조언이 가능합니다.</p>
+      </div>
+      <div class="card">
+        <h3>너무 많이 빼려고 하면?</h3>
+        <p>목표 BMI가 저체중(18.5 미만)이거나 감량 속도가 과도하면 경고가 표시되고, 더 건강한 목표를 안내합니다.</p>
+      </div>
+      <div class="card">
+        <h3>예산이 적어도 되나요?</h3>
+        <p>네. 예산과 운동 환경(헬스장/홈트)에 맞춰 현실적인 식단·운동 방향을 제안합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 문의하기 -->
+  <section id="contact" class="contact">
+    <h2>문의하기</h2>
+    <div class="form">
+      <div class="form__row">
+        <label>이름</label>
+        <input type="text" id="c_name" placeholder="이름" />
+      </div>
+      <div class="form__row">
+        <label>내용</label>
+        <textarea id="c_msg" rows="4" placeholder="문의 내용을 입력해주세요"></textarea>
+      </div>
+      <button id="contactBtn" class="btn btn--primary btn--full">보내기</button>
+      <p id="contactMsg" class="contact__msg"></p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 헬시플랜 · 참고용 서비스입니다.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
