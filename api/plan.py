@@ -1,4 +1,4 @@
-from http.server import BaseHTTPRequestHandler
+﻿from http.server import BaseHTTPRequestHandler
 import json
 import os
 import urllib.request
@@ -34,8 +34,8 @@ class handler(BaseHTTPRequestHandler):
                 self._send(500, {"error": "API key not set"})
                 return
             url = ("https://generativelanguage.googleapis.com/v1beta/models/"
-                                      "gemini-3.5-flash:generateContent?key=" + api_key)
-                        payload = {
+                   "gemini-flash-latest:generateContent?key=" + api_key)
+            payload = {
                 "contents": [
                     {"parts": [{"text": build_prompt(data)}]}
                 ],
