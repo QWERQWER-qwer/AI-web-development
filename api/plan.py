@@ -1,4 +1,4 @@
-﻿from http.server import BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler
 import json
 import os
 import time
@@ -54,22 +54,23 @@ class handler(BaseHTTPRequestHandler):
             prompt = build_prompt(data)
 
             result = None
-            last_status = None
-            for attempt in range(3):
+            for attempt in range(4):
                 try:
                     result = call_gemini(api_key, prompt)
                     break
                 except urllib.error.HTTPError as e:
-                    last_status = e.code
-                    if e.code in (429, 500, 502, 503, 504) and attempt < 2:
-                        time.sleep(2)
+                    if e.code in (429, 500, 502, 503, 504) and attempt < 3:
+                        time.sleep(3)
                         continue
-                    raise
+                    self._send(e.code, {"error": "Gemini busy (" + str(e.code) + "). Please retry."})
+                    return
+
+            if not result or "candidates" not in result or not result["candidates"]:
+                self._send(503, {"error": "Gemini returned no result. Please retry."})
+                return
 
             plan = result["candidates"][0]["content"]["parts"][0]["text"]
             self._send(200, {"plan": plan})
-        except urllib.error.HTTPError as e:
-            self._send(e.code, {"error": "Gemini API error " + str(e.code) + " (server busy, try again)"})
         except Exception as e:
             self._send(500, {"error": str(e)})
 
