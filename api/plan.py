@@ -34,7 +34,7 @@ class handler(BaseHTTPRequestHandler):
                 self._send(500, {"error": "API key not set"})
                 return
             url = ("https://generativelanguage.googleapis.com/v1beta/models/"
-                   "gemini-2.5-flash:generateContent?key=" + api_key)
+                                      "gemini-3.5-flash:generateContent?key=" + api_key)
             payload = {
                 "contents": [
                     {"parts": [{"text": build_prompt(data)}]}
