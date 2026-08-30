@@ -99,8 +99,10 @@ $("generateBtn").addEventListener("click", async () => {
     });
     clearTimeout(timeout);
 
-    if (!res.ok) {
-      resultBox.innerHTML = `<span class="err">일시적인 오류가 발생했어요 (${res.status}). 잠시 후 다시 시도해주세요.</span>`;
+        if (!res.ok) {
+      let detail = "";
+      try { const j = await res.json(); detail = j.error ? " — " + j.error : ""; } catch (e) {}
+      resultBox.innerHTML = `<span class="err">오류가 발생했어요 (${res.status})${detail}</span>`;
       return;
     }
 
