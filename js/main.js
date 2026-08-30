@@ -1,9 +1,9 @@
-// ===== 요소 참조 =====
+﻿// ===== ?붿냼 李몄“ =====
 const $ = (id) => document.getElementById(id);
 const bmiBox = $("bmiBox");
 const resultBox = $("result");
 
-// ===== BMI 실시간 계산 =====
+// ===== BMI ?ㅼ떆媛?怨꾩궛 =====
 function calcBMI() {
   const h = parseFloat($("height").value);
   const w = parseFloat($("weight").value);
@@ -12,38 +12,38 @@ function calcBMI() {
   if (!h || !w) { bmiBox.innerHTML = ""; return; }
 
   const bmi = w / ((h / 100) ** 2);
-  let msg = `현재 BMI: <b>${bmi.toFixed(1)}</b> (${bmiLabel(bmi)})`;
+  let msg = `?꾩옱 BMI: <b>${bmi.toFixed(1)}</b> (${bmiLabel(bmi)})`;
 
-  // 목표 BMI가 저체중이면 경고
+  // 紐⑺몴 BMI媛 ?泥댁쨷?대㈃ 寃쎄퀬
   if (t) {
     const targetBmi = t / ((h / 100) ** 2);
-    msg += `<br />목표 BMI: <b>${targetBmi.toFixed(1)}</b> (${bmiLabel(targetBmi)})`;
+    msg += `<br />紐⑺몴 BMI: <b>${targetBmi.toFixed(1)}</b> (${bmiLabel(targetBmi)})`;
     if (targetBmi < 18.5) {
-      msg += `<br /><span class="warn">⚠ 목표 체중이 저체중 범위예요. 더 건강한 목표를 권장해요.</span>`;
+      msg += `<br /><span class="warn">??紐⑺몴 泥댁쨷???泥댁쨷 踰붿쐞?덉슂. ??嫄닿컯??紐⑺몴瑜?沅뚯옣?댁슂.</span>`;
     }
   }
   bmiBox.innerHTML = msg;
 }
 
 function bmiLabel(bmi) {
-  if (bmi < 18.5) return "저체중";
-  if (bmi < 23) return "정상";
-  if (bmi < 25) return "과체중";
-  return "비만";
+  if (bmi < 18.5) return "?泥댁쨷";
+  if (bmi < 23) return "?뺤긽";
+  if (bmi < 25) return "怨쇱껜以?;
+  return "鍮꾨쭔";
 }
 
 ["height", "weight", "target"].forEach((id) =>
   $(id).addEventListener("input", calcBMI)
 );
 
-// ===== 과도한 감량 속도 검증 =====
+// ===== 怨쇰룄??媛먮웾 ?띾룄 寃利?=====
 function checkPace(w, t, weeks) {
-  const lossPerWeek = (w - t) / weeks;      // 주당 감량 kg
-  const maxPerWeek = w * 0.01;              // 주당 현재 체중의 1%
+  const lossPerWeek = (w - t) / weeks;      // 二쇰떦 媛먮웾 kg
+  const maxPerWeek = w * 0.01;              // 二쇰떦 ?꾩옱 泥댁쨷??1%
   return { lossPerWeek, maxPerWeek, tooFast: lossPerWeek > maxPerWeek };
 }
 
-// ===== 플랜 생성 =====
+// ===== ?뚮옖 ?앹꽦 =====
 $("generateBtn").addEventListener("click", async () => {
   const data = {
     height: parseFloat($("height").value),
@@ -60,36 +60,34 @@ $("generateBtn").addEventListener("click", async () => {
     place: $("place").value,
   };
 
-  // 1) 빈 입력 검증
-  if (!data.height || !data.weight || !data.target || !data.weeks) {
-    resultBox.innerHTML = `<span class="err">키·체중·목표 체중·기간을 모두 입력해주세요.</span>`;
+  // 1) 鍮??낅젰 寃利?  if (!data.height || !data.weight || !data.target || !data.weeks) {
+    resultBox.innerHTML = `<span class="err">?ㅒ룹껜以뫢룸ぉ??泥댁쨷쨌湲곌컙??紐⑤몢 ?낅젰?댁＜?몄슂.</span>`;
     return;
   }
   if (data.target >= data.weight) {
-    resultBox.innerHTML = `<span class="err">목표 체중은 현재 체중보다 낮아야 해요.</span>`;
+    resultBox.innerHTML = `<span class="err">紐⑺몴 泥댁쨷? ?꾩옱 泥댁쨷蹂대떎 ??븘???댁슂.</span>`;
     return;
   }
 
-  // 2) 과도한 감량 속도 경고 (진행은 시키되 경고 포함)
+  // 2) 怨쇰룄??媛먮웾 ?띾룄 寃쎄퀬 (吏꾪뻾? ?쒗궎??寃쎄퀬 ?ы븿)
   const pace = checkPace(data.weight, data.target, data.weeks);
   const targetBmi = data.target / ((data.height / 100) ** 2);
   if (targetBmi < 18.5) {
-    resultBox.innerHTML = `<span class="err">목표 체중이 저체중 범위예요. 기간을 늘리거나 목표를 조정해 주세요.</span>`;
+    resultBox.innerHTML = `<span class="err">紐⑺몴 泥댁쨷???泥댁쨷 踰붿쐞?덉슂. 湲곌컙???섎━嫄곕굹 紐⑺몴瑜?議곗젙??二쇱꽭??</span>`;
     return;
   }
   if (pace.tooFast) {
     resultBox.innerHTML =
-      `<span class="err">건강한 감량 속도(주당 약 ${pace.maxPerWeek.toFixed(1)}kg)를 초과했어요. ` +
-      `현재 계획은 주당 ${pace.lossPerWeek.toFixed(1)}kg 감량이에요. 기간을 늘려주세요.</span>`;
+      `<span class="err">嫄닿컯??媛먮웾 ?띾룄(二쇰떦 ??${pace.maxPerWeek.toFixed(1)}kg)瑜?珥덇낵?덉뼱?? ` +
+      `?꾩옱 怨꾪쉷? 二쇰떦 ${pace.lossPerWeek.toFixed(1)}kg 媛먮웾?댁뿉?? 湲곌컙???섎젮二쇱꽭??</span>`;
     return;
   }
 
-  // 3) API 호출 (지연/타임아웃 + 오류 처리)
-  resultBox.innerHTML = `<span class="loading">AI가 플랜을 만들고 있어요... ⏳</span>`;
+  // 3) API ?몄텧 (吏????꾩븘??+ ?ㅻ쪟 泥섎━)
+  resultBox.innerHTML = `<span class="loading">AI媛 ?뚮옖??留뚮뱾怨??덉뼱??.. ??/span>`;
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30000); // 30초 타임아웃
-
+  const timeout = setTimeout(() => controller.abort(), 60000); // 30珥???꾩븘??
   try {
     const res = await fetch("/api/plan", {
       method: "POST",
@@ -101,35 +99,35 @@ $("generateBtn").addEventListener("click", async () => {
 
         if (!res.ok) {
       let detail = "";
-      try { const j = await res.json(); detail = j.error ? " — " + j.error : ""; } catch (e) {}
-      resultBox.innerHTML = `<span class="err">오류가 발생했어요 (${res.status})${detail}</span>`;
+      try { const j = await res.json(); detail = j.error ? " ??" + j.error : ""; } catch (e) {}
+      resultBox.innerHTML = `<span class="err">?ㅻ쪟媛 諛쒖깮?덉뼱??(${res.status})${detail}</span>`;
       return;
     }
 
     const json = await res.json();
-    resultBox.textContent = json.plan || "결과를 받지 못했어요.";
+    resultBox.textContent = json.plan || "寃곌낵瑜?諛쏆? 紐삵뻽?댁슂.";
   } catch (err) {
     clearTimeout(timeout);
     if (err.name === "AbortError") {
-      resultBox.innerHTML = `<span class="err">응답이 지연되고 있어요. 잠시 후 다시 시도해주세요.</span>`;
+      resultBox.innerHTML = `<span class="err">?묐떟??吏?곕릺怨??덉뼱?? ?좎떆 ???ㅼ떆 ?쒕룄?댁＜?몄슂.</span>`;
     } else {
-      resultBox.innerHTML = `<span class="err">네트워크 오류가 발생했어요. 다시 시도해주세요.</span>`;
+      resultBox.innerHTML = `<span class="err">?ㅽ듃?뚰겕 ?ㅻ쪟媛 諛쒖깮?덉뼱?? ?ㅼ떆 ?쒕룄?댁＜?몄슂.</span>`;
     }
   }
 });
 
-// ===== 문의 폼 (프론트 데모) =====
+// ===== 臾몄쓽 ??(?꾨줎???곕え) =====
 $("contactBtn").addEventListener("click", () => {
   const name = $("c_name").value.trim();
   const msg = $("c_msg").value.trim();
   const out = $("contactMsg");
   if (!name || !msg) {
     out.style.color = "#c0392b";
-    out.textContent = "이름과 내용을 모두 입력해주세요.";
+    out.textContent = "?대쫫怨??댁슜??紐⑤몢 ?낅젰?댁＜?몄슂.";
     return;
   }
   out.style.color = "";
-  out.textContent = "문의가 접수되었어요. 감사합니다!";
+  out.textContent = "臾몄쓽媛 ?묒닔?섏뿀?댁슂. 媛먯궗?⑸땲??";
   $("c_name").value = "";
   $("c_msg").value = "";
 });
