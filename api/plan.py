@@ -27,7 +27,7 @@ def build_prompt(d):
 
 def call_gemini(api_key, prompt):
     url = ("https://generativelanguage.googleapis.com/v1beta/models/"
-           "gemini-2.5-flash-lite:generateContent?key=" + api_key)
+           "gemini-flash-latest:generateContent?key=" + api_key)
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {"maxOutputTokens": 800, "temperature": 0.7},
