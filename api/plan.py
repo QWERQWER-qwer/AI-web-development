@@ -35,10 +35,14 @@ class handler(BaseHTTPRequestHandler):
                 return
             url = ("https://generativelanguage.googleapis.com/v1beta/models/"
                                       "gemini-3.5-flash:generateContent?key=" + api_key)
-            payload = {
+                        payload = {
                 "contents": [
                     {"parts": [{"text": build_prompt(data)}]}
-                ]
+                ],
+                "generationConfig": {
+                    "maxOutputTokens": 800,
+                    "temperature": 0.7
+                }
             }
             req = urllib.request.Request(
                 url,
@@ -46,7 +50,7 @@ class handler(BaseHTTPRequestHandler):
                 headers={"Content-Type": "application/json"},
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=25) as resp:
+            with urllib.request.urlopen(req, timeout=55) as resp:
                 result = json.loads(resp.read())
             plan = result["candidates"][0]["content"]["parts"][0]["text"]
             self._send(200, {"plan": plan})
