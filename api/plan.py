@@ -1,6 +1,7 @@
-﻿from http.server import BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler
 import json
 import os
+import time
 import urllib.request
 import urllib.error
 
@@ -24,6 +25,23 @@ def build_prompt(d):
     )
 
 
+def call_gemini(api_key, prompt):
+    url = ("https://generativelanguage.googleapis.com/v1beta/models/"
+           "gemini-flash-latest:generateContent?key=" + api_key)
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"maxOutputTokens": 800, "temperature": 0.7},
+    }
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=55) as resp:
+        return json.loads(resp.read())
+
+
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
@@ -33,29 +51,25 @@ class handler(BaseHTTPRequestHandler):
             if not api_key:
                 self._send(500, {"error": "API key not set"})
                 return
-            url = ("https://generativelanguage.googleapis.com/v1beta/models/"
-                   "gemini-flash-latest:generateContent?key=" + api_key)
-            payload = {
-                "contents": [
-                    {"parts": [{"text": build_prompt(data)}]}
-                ],
-                "generationConfig": {
-                    "maxOutputTokens": 800,
-                    "temperature": 0.7
-                }
-            }
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"},
-                method="POST",
-            )
-            with urllib.request.urlopen(req, timeout=55) as resp:
-                result = json.loads(resp.read())
+            prompt = build_prompt(data)
+
+            result = None
+            last_status = None
+            for attempt in range(3):
+                try:
+                    result = call_gemini(api_key, prompt)
+                    break
+                except urllib.error.HTTPError as e:
+                    last_status = e.code
+                    if e.code in (429, 500, 502, 503, 504) and attempt < 2:
+                        time.sleep(2)
+                        continue
+                    raise
+
             plan = result["candidates"][0]["content"]["parts"][0]["text"]
             self._send(200, {"plan": plan})
         except urllib.error.HTTPError as e:
-            self._send(e.code, {"error": "Gemini API error " + str(e.code)})
+            self._send(e.code, {"error": "Gemini API error " + str(e.code) + " (server busy, try again)"})
         except Exception as e:
             self._send(500, {"error": str(e)})
 
